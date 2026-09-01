@@ -194,7 +194,7 @@ end
 
 ### Secondary IP failover
 
-By default, failover is handled by having the Fabric Connector update the route table's next-hop (as shown above) so that traffic is redirected to the internal IP of the active unit's port2. Setting the `highAvailabilityFailoverSecondaryIP` ARM template parameter to `true` (default `false`) changes this behavior: instead of moving a route table next-hop, the Fabric Connector moves a floating secondary IP address between port2 of FortiGate A and FortiGate B.
+By default, the failover uses this secondary IP failover in the latest templates. Before the failover was handled by having the Fabric Connector update the route table's next-hop (as shown above) and traffic was redirected to the internal IP of the active unit's port2. Setting the `highAvailabilityFailoverSecondaryIP` ARM template parameter to `false` (default `true`) changes this behavior back. It is also possible to manually change this behavior in the `config system sdn-connector` section.
 
 With this method, each unit's `AzureSDN` connector is configured with a `nic` entry for its own port2, pointing to the peer's port2 NIC via `peer-nic`. Both units share the same floating private IP address on `ipconfig2` of that NIC; on failover, the Fabric Connector re-assigns this IP configuration to the NIC of the unit that becomes active. Locally, that same floating IP is also added as a secondary IP on port2 so it can be used as a gateway/next-hop by other resources in the VNET (for example, as a UDR next-hop pointing at this floating IP instead of at the route table entries above).
 
